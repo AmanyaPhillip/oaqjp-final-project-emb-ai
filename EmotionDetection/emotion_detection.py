@@ -24,13 +24,14 @@ def emotion_detection(text_to_analyze):
         fear = formatted_response['emotionPredictions'][0]['emotion']['fear']
         joy = formatted_response['emotionPredictions'][0]['emotion']['joy']
         sadness = formatted_response['emotionPredictions'][0]['emotion']['sadness']
-    # If the response status code is 500, set label and score to None
-    elif response.status_code == 500:
+    # If the response status code is 400, set label and score to None
+    elif response.status_code == 400:
         anger = None
         disgust = None
         fear = None
         joy = None
         sadness = None
+        emotion = None
 
     data = {
         "anger": anger,
@@ -39,11 +40,14 @@ def emotion_detection(text_to_analyze):
         "joy":joy,
         "sadness":sadness
     }
-    largest_value = 0
-    for name, value in data.items():
-        if value > largest_value:
-            largest_value = value
-            largest_variable_name = name
     
-    data['dominant_emotion'] = largest_variable_name
+    if data['anger'] is None :
+        data['dominant_emotion'] = None
+    else:
+        largest_value = 0
+        for name, value in data.items():
+            if value > largest_value:
+                largest_value = value
+                largest_variable_name = name
+        data['dominant_emotion'] = largest_variable_name
     return data
